@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GitHub Profile Analyzer</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">GH</div>
+      <div>
+        <h1>GitHub Analyzer</h1>
+        <p class="sub">Profile + Repo + Language insights</p>
+      </div>
+    </div>
+
+    <button id="themeToggle" class="btn ghost" title="Toggle theme">
+      🌙 <span class="hide-sm">Theme</span>
+    </button>
+  </header>
+
+  <main class="container">
+    <section class="searchCard card">
+      <div class="searchRow">
+        <input id="usernameInput" type="text" placeholder="Enter GitHub username (e.g., torvalds)" />
+        <button id="analyzeBtn" class="btn primary">Analyze</button>
+      </div>
+      <div class="hintRow">
+        <span class="hint">Tip: Press <b>Enter</b> to search</span>
+        <span id="rateInfo" class="hint"></span>
+      </div>
+    </section>
+
+    <section id="status" class="status"></section>
+
+    <section id="profileWrap" class="grid two"></section>
+
+    <section class="grid two">
+      <div class="card">
+        <div class="cardHead">
+          <h2>Languages</h2>
+          <p class="muted">Based on top repos</p>
+        </div>
+        <div class="chartWrap">
+          <canvas id="langChart"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="cardHead">
+          <h2>Repo Controls</h2>
+          <p class="muted">Filter & sort repositories</p>
+        </div>
+
+        <div class="controls">
+          <div class="control">
+            <label for="repoSearch">Search repo</label>
+            <input id="repoSearch" type="text" placeholder="Type to filter repos..." />
+          </div>
+
+          <div class="control">
+            <label for="sortSelect">Sort by</label>
+            <select id="sortSelect">
+              <option value="stars">Stars (desc)</option>
+              <option value="forks">Forks (desc)</option>
+              <option value="updated">Recently updated</option>
+              <option value="name">Name (A-Z)</option>
+            </select>
+          </div>
+
+          <div class="control">
+            <label for="topSelect">Show</label>
+            <select id="topSelect">
+              <option value="10">Top 10</option>
+              <option value="20">Top 20</option>
+              <option value="50">Top 50</option>
+              <option value="100">All (max 100)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="cardHead">
+        <h2>Repositories</h2>
+        <p class="muted" id="repoMeta"></p>
+      </div>
+      <div id="reposWrap" class="reposWrap"></div>
+    </section>
+
+    <footer class="footer">
+      <p>
+        Built using GitHub REST API •
+        <span class="muted">Cache + Charts + Filters</span>
+      </p>
+    </footer>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
