@@ -40,6 +40,14 @@
 
     <section id="profileWrap" class="grid two"></section>
 
+    <section class="card">
+  <div class="cardHead">
+    <h2>Contributions</h2>
+    <p class="muted">Last 12 months (GitHub heatmap)</p>
+  </div>
+  <div id="heatmapWrap" class="heatmapWrap muted">Loading…</div></section>
+
+
     <section class="grid two">
       <div class="card">
         <div class="cardHead">
@@ -101,6 +109,31 @@
       </p>
     </footer>
   </main>
+  <!-- Repo Detail Modal -->
+  <div id="repoModalOverlay" class="modalOverlay hidden">
+    <div id="repoModal" class="modal card">
+      <div class="modalHead">
+        <h2 id="modalRepoName">Repository</h2>
+        <button id="modalCloseBtn" class="btn ghost" title="Close">✖</button>
+      </div>
+
+      <p id="modalRepoDesc" class="muted"></p>
+
+      <div class="modalStats">
+        <span class="pill" id="modalLang"></span>
+        <span class="pill" id="modalStars"></span>
+        <span class="pill" id="modalForks"></span>
+        <span class="pill" id="modalIssues"></span>
+        <span class="pill" id="modalWatchers"></span>
+        <span class="pill" id="modalUpdated"></span>
+      </div>
+
+      <div class="modalBtns">
+        <a id="modalOpenBtn" class="btn primary" target="_blank">Open on GitHub</a>
+        <button id="modalCopyCloneBtn" class="btn">Copy Clone URL</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="app.js"></script>
 </body>

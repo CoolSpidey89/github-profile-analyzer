@@ -5,13 +5,16 @@ export function getFilteredRepos(repos, query, sortBy, topN) {
   let filtered = [...repos];
 
   if (query) {
-    filtered = filtered.filter(r => r.name.toLowerCase().includes(query.toLowerCase()));
+    filtered = filtered.filter((r) =>
+      r.name.toLowerCase().includes(query.toLowerCase())
+    );
   }
 
   filtered.sort((a, b) => {
     if (sortBy === "stars") return b.stargazers_count - a.stargazers_count;
     if (sortBy === "forks") return b.forks_count - a.forks_count;
-    if (sortBy === "updated") return new Date(b.updated_at) - new Date(a.updated_at);
+    if (sortBy === "updated")
+      return new Date(b.updated_at) - new Date(a.updated_at);
     if (sortBy === "name") return a.name.localeCompare(b.name);
     return 0;
   });
@@ -19,7 +22,10 @@ export function getFilteredRepos(repos, query, sortBy, topN) {
   return filtered.slice(0, topN);
 }
 
-export function renderRepos(reposWrap, repoMeta, repos, totalCount) {
+/**
+ * ✅ Added callback onRepoClick(repo)
+ */
+export function renderRepos(reposWrap, repoMeta, repos, totalCount, onRepoClick) {
   repoMeta.textContent = `${repos.length} shown • ${totalCount} fetched`;
   reposWrap.innerHTML = "";
 
@@ -31,12 +37,14 @@ export function renderRepos(reposWrap, repoMeta, repos, totalCount) {
   for (const r of repos) {
     const el = document.createElement("div");
     el.className = "repoItem";
+    el.style.cursor = "pointer";
+
     el.innerHTML = `
       <div class="repoLeft">
-        <div class="repoName">
-          <a href="${r.html_url}" target="_blank">${r.name}</a>
+        <div class="repoName">${r.name}</div>
+        <div class="repoDesc">
+          ${compactStr(r.description || "No description.", 140)}
         </div>
-        <div class="repoDesc">${compactStr(r.description || "No description.", 140)}</div>
       </div>
       <div class="repoRight">
         ${r.language ? `<span class="pill">🧠 ${r.language}</span>` : ""}
@@ -45,6 +53,8 @@ export function renderRepos(reposWrap, repoMeta, repos, totalCount) {
         <span class="pill">🕒 ${formatDate(r.updated_at)}</span>
       </div>
     `;
+
+    el.addEventListener("click", () => onRepoClick && onRepoClick(r));
     reposWrap.appendChild(el);
   }
 }

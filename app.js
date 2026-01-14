@@ -28,6 +28,25 @@ const repoSearch = document.getElementById("repoSearch");
 const sortSelect = document.getElementById("sortSelect");
 const topSelect = document.getElementById("topSelect");
 
+const repoModalOverlay = document.getElementById("repoModalOverlay");
+const modalCloseBtn = document.getElementById("modalCloseBtn");
+
+const modalRepoName = document.getElementById("modalRepoName");
+const modalRepoDesc = document.getElementById("modalRepoDesc");
+const modalLang = document.getElementById("modalLang");
+const modalStars = document.getElementById("modalStars");
+const modalForks = document.getElementById("modalForks");
+const modalIssues = document.getElementById("modalIssues");
+const modalWatchers = document.getElementById("modalWatchers");
+const modalUpdated = document.getElementById("modalUpdated");
+
+const modalOpenBtn = document.getElementById("modalOpenBtn");
+const modalCopyCloneBtn = document.getElementById("modalCopyCloneBtn");
+
+const heatmapWrap = document.getElementById("heatmapWrap");
+
+
+
 const langCanvas = document.getElementById("langChart");
 let langChart = null;
 
@@ -89,7 +108,7 @@ function updateRepoUI() {
   const topN = Number(topSelect.value);
 
   const repos = getFilteredRepos(CURRENT_REPOS, query, sortBy, topN);
-  renderRepos(reposWrap, repoMeta, repos, CURRENT_REPOS.length);
+  renderRepos(reposWrap, repoMeta, repos, CURRENT_REPOS.length, openRepoModal);
 }
 
 // -----------------------------
@@ -129,6 +148,8 @@ async function analyze(username) {
   } catch (err) {
     setStatus("err", `❌ ${err.message}`);
   }
+  loadHeatmap(username);
+
 }
 
 // -----------------------------
@@ -176,4 +197,56 @@ if (urlUser) {
   // ✅ remove default auto-call to save rate limit
   // usernameInput.value = "torvalds";
   // analyze("torvalds");
+}
+
+function openRepoModal(repo) {
+  modalRepoName.textContent = repo.name;
+  modalRepoDesc.textContent = repo.description || "No description.";
+
+  modalLang.textContent = repo.language ? `🧠 ${repo.language}` : "🧠 N/A";
+  modalStars.textContent = `⭐ Stars: ${repo.stargazers_count}`;
+  modalForks.textContent = `🍴 Forks: ${repo.forks_count}`;
+  modalIssues.textContent = `🐞 Issues: ${repo.open_issues_count}`;
+  modalWatchers.textContent = `👀 Watchers: ${repo.watchers_count}`;
+  modalUpdated.textContent = `🕒 Updated: ${new Date(repo.updated_at).toLocaleDateString()}`;
+
+  modalOpenBtn.href = repo.html_url;
+
+  modalCopyCloneBtn.onclick = async () => {
+    await navigator.clipboard.writeText(repo.clone_url);
+    modalCopyCloneBtn.textContent = "Copied ✅";
+    setTimeout(() => (modalCopyCloneBtn.textContent = "Copy Clone URL"), 1200);
+  };
+
+  repoModalOverlay.classList.remove("hidden");
+}
+
+function closeRepoModal() {
+  repoModalOverlay.classList.add("hidden");
+}
+
+modalCloseBtn.addEventListener("click", closeRepoModal);
+repoModalOverlay.addEventListener("click", (e) => {
+  if (e.target === repoModalOverlay) closeRepoModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeRepoModal();
+});
+
+async function loadHeatmap(username) {
+  heatmapWrap.textContent = "Loading…";
+
+  try {
+    const res = await fetch(`https://github.com/users/${username}/contributions`);
+    const svg = await res.text();
+
+    // Wrap SVG
+    heatmapWrap.innerHTML = svg;
+
+    // Optional: remove huge footer text inside svg
+    const txt = heatmapWrap.querySelector("text");
+    if (txt) txt.remove();
+  } catch {
+    heatmapWrap.textContent = "Failed to load heatmap.";
+  }
 }

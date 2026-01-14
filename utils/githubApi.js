@@ -1,17 +1,30 @@
 // utils/githubApi.js
 import { getCache, setCache } from "./cache.js";
+import { TOKEN } from "./token.js";
 
 export async function ghFetch(url, rateInfoEl) {
-  const res = await fetch(url, {
-    headers: { Accept: "application/vnd.github+json" },
-  });
+  const headers = {
+    "Accept": "application/vnd.github+json",
+  };
 
+  // ✅ add authentication header if token exists
+  if (TOKEN && TOKEN.trim().length > 0) {
+    headers["Authorization"] = `Bearer ${TOKEN}`;
+  }
+
+  const res = await fetch(url, { headers });
+
+  // Rate limit info in headers
   const remaining = res.headers.get("x-ratelimit-remaining");
   const reset = res.headers.get("x-ratelimit-reset");
 
   if (rateInfoEl && remaining !== null) {
-    const resetTime = reset ? new Date(Number(reset) * 1000).toLocaleTimeString() : "";
-    rateInfoEl.textContent = `Rate remaining: ${remaining}${resetTime ? ` • resets at ${resetTime}` : ""}`;
+    const resetTime = reset
+      ? new Date(Number(reset) * 1000).toLocaleTimeString()
+      : "";
+    rateInfoEl.textContent = `Rate remaining: ${remaining}${
+      resetTime ? ` • resets at ${resetTime}` : ""
+    }`;
   }
 
   if (!res.ok) {
@@ -25,6 +38,7 @@ export async function ghFetch(url, rateInfoEl) {
 
   return res.json();
 }
+
 
 export async function fetchUser(username, rateInfoEl) {
   const cached = getCache("user", username);
