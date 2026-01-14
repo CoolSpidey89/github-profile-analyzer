@@ -34,10 +34,12 @@ export function renderRepos(reposWrap, repoMeta, repos, totalCount, onRepoClick)
     return;
   }
 
-  for (const r of repos) {
+  for (const [index, r] of repos.entries()) {
     const el = document.createElement("div");
     el.className = "repoItem";
     el.style.cursor = "pointer";
+
+    el.dataset.index = index;
 
     el.innerHTML = `
       <div class="repoLeft">

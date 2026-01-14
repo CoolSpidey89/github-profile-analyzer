@@ -109,15 +109,47 @@ function updateRepoUI() {
 
   const repos = getFilteredRepos(CURRENT_REPOS, query, sortBy, topN);
   renderRepos(reposWrap, repoMeta, repos, CURRENT_REPOS.length, openRepoModal);
+
+  initRepoScrollReveal();
 }
 
 // -----------------------------
 // Main Flow
 // -----------------------------
+function showSkeleton() {
+  // Profile skeleton
+  profileWrap.innerHTML = `
+    <div class="card">
+      <div class="skeleton skelBig"></div>
+      <div class="skeleton skelLine" style="width:70%"></div>
+      <div class="skeleton skelLine" style="width:55%"></div>
+      <div class="skeleton skelLine" style="width:40%"></div>
+    </div>
+
+    <div class="card">
+      <div class="skeleton skelMed"></div>
+      <div class="skeleton skelLine" style="width:90%"></div>
+      <div class="skeleton skelLine" style="width:70%"></div>
+    </div>
+  `;
+
+  // Repo skeleton
+  reposWrap.innerHTML = `
+    <div class="repoItem"><div class="skeleton skelLine" style="width:65%"></div></div>
+    <div class="repoItem"><div class="skeleton skelLine" style="width:80%"></div></div>
+    <div class="repoItem"><div class="skeleton skelLine" style="width:60%"></div></div>
+    <div class="repoItem"><div class="skeleton skelLine" style="width:75%"></div></div>
+  `;
+
+  repoMeta.textContent = "Loading repositories...";
+}
+
 async function analyze(username) {
   if (!username) return;
 
   setStatus("loading", "Loading profile…");
+  showSkeleton();
+
   profileWrap.innerHTML = "";
   reposWrap.innerHTML = "";
   repoMeta.textContent = "";
@@ -250,3 +282,80 @@ async function loadHeatmap(username) {
     heatmapWrap.textContent = "Failed to load heatmap.";
   }
 }
+
+function initRepoScrollReveal() {
+  const target = reposWrap; // container of repos
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        // ✅ reveal each repo one by one
+        const items = target.querySelectorAll(".repoItem");
+        items.forEach((item) => {
+          const i = Number(item.dataset.index || 0);
+          item.style.animationDelay = `${Math.min(i * 70, 700)}ms`;
+          item.classList.add("reveal");
+        });
+
+        observer.disconnect(); // reveal only once
+      });
+    },
+    { threshold: 0.2 }
+  );
+
+  observer.observe(target);
+}
+
+const spotlight = document.getElementById("spotlight");
+window.addEventListener("mousemove", (e) => {
+  spotlight.style.left = e.clientX + "px";
+  spotlight.style.top = e.clientY + "px";
+});
+
+function enableTilt() {
+  document.querySelectorAll(".card").forEach(card => {
+    card.addEventListener("mousemove", (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const rotateY = ((x / rect.width) - 0.5) * 10;
+      const rotateX = ((y / rect.height) - 0.5) * -10;
+
+      card.style.transform = `perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+    });
+
+    card.addEventListener("mouseleave", () => {
+      card.style.transform = "";
+    });
+  });
+}
+enableTilt();
+
+const typing = document.getElementById("typing");
+const text = "GitHub Analyzer";
+let i = 0;
+
+function typeLoop() {
+  typing.textContent = text.slice(0, i);
+
+  // typing forward
+  if (i < text.length) {
+    i++;
+    setTimeout(typeLoop, 110); // typing speed
+  } else {
+    // pause AFTER completing full text
+    setTimeout(() => {
+      i = 0;
+      typing.textContent = "";
+      setTimeout(typeLoop, 400); // pause before retyping
+    }, 1500); // pause when full text is displayed
+  }
+}
+
+typeLoop();
+
+
+
