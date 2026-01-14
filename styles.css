@@ -603,3 +603,153 @@ body::marker { content: ""; }
   50% { opacity: 0; }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.35) 10%, transparent 11%);
+  transform: scale(10);
+  opacity: 0;
+  transition: transform .6s ease, opacity .6s ease;
+}
+
+.ripple:active::after {
+  transform: scale(0);
+  opacity: 1;
+  transition: 0s;
+}
+
+.shine {
+  position: relative;
+}
+
+.shine::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 50%;
+  height: 220%;
+  transform: rotate(20deg);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  animation: shineMove 1.1s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes shineMove {
+  from { left: -60%; }
+  to { left: 140%; }
+}
+
+/* Shine animation that we can trigger via class */
+.shineOnce {
+  position: relative;
+  overflow: hidden;
+}
+
+.shineOnce::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -60%;
+  width: 50%;
+  height: 220%;
+  transform: rotate(20deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.12),
+    transparent
+  );
+  pointer-events: none;
+  animation: shineMove 1.1s ease forwards;
+}
+
+@keyframes shineMove {
+  from { left: -60%; }
+  to   { left: 140%; }
+}
+
+/* Hover shine effect for cards */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -80%;
+  width: 50%;
+  height: 220%;
+  transform: rotate(20deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.10),
+    transparent
+  );
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 1;
+  animation: shineHover 0.95s ease forwards;
+}
+
+@keyframes shineHover {
+  from { left: -80%; }
+  to   { left: 140%; }
+}
+
+.card:hover {
+  box-shadow: 0 0 0 1px rgba(90,178,255,0.18),
+              0 25px 80px rgba(0,0,0,0.35);
+}
+
+.progressBar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, rgba(90,178,255,1), rgba(255,107,107,0.9));
+  z-index: 9999;
+}
+
+html, body, .card, .btn, input, select {
+  transition: background-color .35s ease, color .35s ease, border-color .35s ease, box-shadow .35s ease;
+}
+
+.btn.primary {
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+  0%,100% { box-shadow: 0 0 0 rgba(90,178,255,0); }
+  50% { box-shadow: 0 0 24px rgba(90,178,255,0.22); }
+}
+
+.siteLogo{
+  width: 50px;      
+  height: 50px;
+  object-fit: contain;   /* keeps logo proportions */
+  border-radius: 12px;   /* optional */
+}
+
+

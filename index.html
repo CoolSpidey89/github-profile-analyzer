@@ -10,25 +10,27 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <header class="topbar">
+    <div class="progressBar" id="progressBar"></div>
+    
+    <header class="topbar">
     <div class="brand">
-      <div class="logo">GH</div>
+      <img src="assets/logo.jpeg" alt="Logo" class="siteLogo" />
       <div>
         <h1 class="mainTitle"><span id="typing" class="typing"></span></h1>
         <p class="sub">Your Personal Github Analyzer</p>
       </div>
     </div>
 
-    <button id="themeToggle" class="btn ghost" title="Toggle theme">
+    <button id="themeToggle" class="btn ghost ripple" title="Toggle theme">
       🌙 <span class="hide-sm">Theme</span>
     </button>
   </header>
 
-  <main class="container">
+  <main class="container shine">
     <section class="searchCard card">
       <div class="searchRow">
         <input id="usernameInput" type="text" placeholder="Enter GitHub username (e.g., torvalds)" />
-        <button id="analyzeBtn" class="btn primary">Analyze</button>
+        <button id="analyzeBtn" class="btn primary ripple">Analyze</button>
       </div>
       <div class="hintRow">
         <span class="hint">Tip: Press <b>Enter</b> to search</span>
@@ -114,7 +116,7 @@
     <div id="repoModal" class="modal card">
       <div class="modalHead">
         <h2 id="modalRepoName">Repository</h2>
-        <button id="modalCloseBtn" class="btn ghost" title="Close">✖</button>
+        <button id="modalCloseBtn" class="btn ghost ripple" title="Close">✖</button>
       </div>
 
       <p id="modalRepoDesc" class="muted"></p>
@@ -129,8 +131,8 @@
       </div>
 
       <div class="modalBtns">
-        <a id="modalOpenBtn" class="btn primary" target="_blank">Open on GitHub</a>
-        <button id="modalCopyCloneBtn" class="btn">Copy Clone URL</button>
+        <a id="modalOpenBtn" class="btn ripple" target="_blank">Open on GitHub</a>
+        <button id="modalCopyCloneBtn" class="btn ripple">Copy Clone URL</button>
       </div>
     </div>
   </div>

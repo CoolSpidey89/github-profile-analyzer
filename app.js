@@ -143,6 +143,15 @@ function showSkeleton() {
 
   repoMeta.textContent = "Loading repositories...";
 }
+function triggerShineOnProfile() {
+  // Shine only on profileWrap section after data loads
+  profileWrap.classList.add("shineOnce");
+
+  // remove class so it can be triggered again on next search
+  setTimeout(() => {
+    profileWrap.classList.remove("shineOnce");
+  }, 1200);
+}
 
 async function analyze(username) {
   if (!username) return;
@@ -168,6 +177,8 @@ async function analyze(username) {
 
     const insights = computeInsights(CURRENT_REPOS);
     renderProfile(profileWrap, user, insights);
+    triggerShineOnProfile();
+
 
     updateRepoUI();
 
@@ -356,6 +367,29 @@ function typeLoop() {
 }
 
 typeLoop();
+
+function magneticButtons() {
+  document.querySelectorAll(".btn").forEach(btn => {
+    btn.addEventListener("mousemove", (e) => {
+      const rect = btn.getBoundingClientRect();
+      const x = e.clientX - rect.left - rect.width / 2;
+      const y = e.clientY - rect.top - rect.height / 2;
+      btn.style.transform = `translate(${x * 0.12}px, ${y * 0.12}px)`;
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      btn.style.transform = "";
+    });
+  });
+}
+magneticButtons();
+
+const progressBar = document.getElementById("progressBar");
+window.addEventListener("scroll", () => {
+  const scroll = window.scrollY;
+  const height = document.documentElement.scrollHeight - window.innerHeight;
+  progressBar.style.width = `${(scroll / height) * 100}%`;
+});
 
 
 
