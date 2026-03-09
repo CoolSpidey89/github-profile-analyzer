@@ -2,18 +2,10 @@
 import { getCache, setCache } from "./cache.js";
 
 export async function ghFetch(url, rateInfoEl) {
-  const headers = {
-    "Accept": "application/vnd.github+json",
-  };
-
-  // ✅ add authentication header if token exists
-  if (TOKEN && TOKEN.trim().length > 0) {
-    headers["Authorization"] = `Bearer ${TOKEN}`;
-  }
 
   const res = await fetch(`/api/github?url=${encodeURIComponent(url)}`);
 
-  // Rate limit info in headers
+  // Rate limit info
   const remaining = res.headers.get("x-ratelimit-remaining");
   const reset = res.headers.get("x-ratelimit-reset");
 
@@ -21,21 +13,23 @@ export async function ghFetch(url, rateInfoEl) {
     const resetTime = reset
       ? new Date(Number(reset) * 1000).toLocaleTimeString()
       : "";
-    rateInfoEl.textContent = `Rate remaining: ${remaining}${
-      resetTime ? ` • resets at ${resetTime}` : ""
-    }`;
+
+    rateInfoEl.textContent =
+      `Rate remaining: ${remaining}${resetTime ? ` • resets at ${resetTime}` : ""}`;
   }
 
   if (!res.ok) {
-    let msg = `Request failed (${res.status})`;
-    try {
-      const err = await res.json();
-      if (err?.message) msg = err.message;
-    } catch {}
-    throw new Error(msg);
+    throw new Error(`Request failed (${res.status})`);
   }
 
-  return res.json();
+  // Detect response type
+  const contentType = res.headers.get("content-type");
+
+  if (contentType && contentType.includes("application/json")) {
+    return res.json();
+  }
+
+  return res.text();
 }
 
 
