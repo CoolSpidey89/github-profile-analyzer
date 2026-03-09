@@ -280,7 +280,7 @@ async function loadHeatmap(username) {
   heatmapWrap.textContent = "Loading…";
 
   try {
-    const res = await fetch(`https://github.com/users/${username}/contributions`);
+    const res = await fetch(`/api/github?url=https://github.com/users/${username}/contributions`);
     const svg = await res.text();
 
     // Wrap SVG

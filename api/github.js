@@ -3,11 +3,12 @@ export default async function handler(req, res) {
 
   const response = await fetch(url, {
     headers: {
-      Accept: "application/vnd.github+json",
       Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
-    },
+      Accept: "application/vnd.github+json"
+    }
   });
 
-  const data = await response.json();
-  res.status(response.status).json(data);
+  const text = await response.text();
+
+  res.status(200).send(text);
 }
