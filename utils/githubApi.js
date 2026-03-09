@@ -1,6 +1,5 @@
 // utils/githubApi.js
 import { getCache, setCache } from "./cache.js";
-const TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 export async function ghFetch(url, rateInfoEl) {
   const headers = {
@@ -12,7 +11,7 @@ export async function ghFetch(url, rateInfoEl) {
     headers["Authorization"] = `Bearer ${TOKEN}`;
   }
 
-  const res = await fetch(url, { headers });
+  const res = await fetch(`/api/github?url=${encodeURIComponent(url)}`);
 
   // Rate limit info in headers
   const remaining = res.headers.get("x-ratelimit-remaining");
