@@ -276,21 +276,27 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") closeRepoModal();
 });
 
-async function loadHeatmap(username) {
-  heatmapWrap.textContent = "Loading…";
+export async function loadHeatmap(username) {
+  const wrap = document.getElementById("heatmapWrap");
 
   try {
     const res = await fetch(`/api/github?url=https://github.com/users/${username}/contributions`);
-    const svg = await res.text();
+    const html = await res.text();
 
-    // Wrap SVG
-    heatmapWrap.innerHTML = svg;
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, "text/html");
 
-    // Optional: remove huge footer text inside svg
-    const txt = heatmapWrap.querySelector("text");
-    if (txt) txt.remove();
-  } catch {
-    heatmapWrap.textContent = "Failed to load heatmap.";
+    const svg = doc.querySelector("svg");
+
+    if (svg) {
+      wrap.innerHTML = "";
+      wrap.appendChild(svg);
+    } else {
+      wrap.textContent = "No contribution data available.";
+    }
+
+  } catch (err) {
+    wrap.textContent = "Failed to load heatmap.";
   }
 }
 
