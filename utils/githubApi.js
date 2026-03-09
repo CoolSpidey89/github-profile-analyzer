@@ -1,6 +1,6 @@
 // utils/githubApi.js
 import { getCache, setCache } from "./cache.js";
-import { TOKEN } from "./token.js";
+const TOKEN = import.meta.env.VITE_GITHUB_TOKEN;
 
 export async function ghFetch(url, rateInfoEl) {
   const headers = {
